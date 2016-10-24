@@ -5,8 +5,9 @@ import (
 	"image/jpeg"
 	"image/png"
 	"net/http"
-	"os"
+	"strings"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/render"
 )
@@ -19,8 +20,7 @@ var (
 	DefaultImage = GetImage()
 )
 
-func Serve() {
-
+func Serve(addr string) {
 	r := martini.NewRouter()
 	mar := martini.New()
 	mar.Use(martini.Recovery())
@@ -34,16 +34,30 @@ func Serve() {
 			r.Get("/png", PNG)
 			r.Get("/jpg", JPG)
 			r.Get("/gif", GIF)
+			r.Get("/:key", IMG)
 		}, Reap)
 	})
-	if os.Getenv("PORT") == "" {
-		os.Setenv("PORT", "80")
-	}
-	m.Run()
+	log.Infof("listening on %s", addr)
+	m.RunOnAddr(addr)
 }
 
 func Hello(rw http.ResponseWriter, req *http.Request) {
 	rw.Write([]byte("hello"))
+}
+
+func IMG(rw http.ResponseWriter, req *http.Request) {
+	for k, handler := range map[string]http.HandlerFunc{
+		".jpg": JPG,
+		".gif": GIF,
+		".png": PNG,
+	} {
+		if strings.HasSuffix(req.URL.Path, k) {
+			handler(rw, req)
+			return
+		}
+	}
+
+	PNG(rw, req)
 }
 
 func PNG(rw http.ResponseWriter, req *http.Request) {
@@ -57,6 +71,6 @@ func JPG(rw http.ResponseWriter, req *http.Request) {
 }
 
 func GIF(rw http.ResponseWriter, req *http.Request) {
-	rw.Header().Add("Content-Type", "image/jpeg")
+	rw.Header().Add("Content-Type", "image/gif")
 	gif.Encode(rw, DefaultImage, &gif.Options{})
 }

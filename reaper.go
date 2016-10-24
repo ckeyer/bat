@@ -1,13 +1,86 @@
 package bat
 
 import (
-	"fmt"
 	"net/http"
+	"strings"
+	"time"
+
+	log "github.com/Sirupsen/logrus"
 )
 
-func Reap(req *http.Request) {
-	fmt.Println(req.RemoteAddr)
-	fmt.Println(req.Referer())
-	fmt.Println(req.Cookies())
-	fmt.Println(req.UserAgent())
+type Reaper interface {
+	Reap(*http.Request) error
+}
+
+type Record struct {
+	Name       string `json:"name"`
+	Path       string `json:"path"`
+	RemoteAddr string `json:"remote_addr"`
+	Referer    string `json:"referer"`
+	Agent      string `json:"agent"`
+	// for url's Params
+	Labels map[string]interface{} `json:"labels"`
+	// for more headers
+	Supplement map[string]interface{} `json:"supplement"`
+	Cookies    []*http.Cookie         `json:"cookies"`
+
+	RecordAt time.Time `json:"record_at"`
+}
+
+func NewRecord(name string, req *http.Request) *Record {
+	r := &Record{
+		Name:       name,
+		Path:       req.URL.Path,
+		RemoteAddr: req.RemoteAddr,
+		Referer:    req.Referer(),
+		Agent:      req.UserAgent(),
+		Cookies:    req.Cookies(),
+
+		Labels:     map[string]interface{}{},
+		Supplement: map[string]interface{}{},
+
+		RecordAt: time.Now(),
+	}
+
+	for k, v := range req.URL.Query() {
+		log.Debugf("url params key: %s, value: %v", k, v)
+		if len(v) == 1 {
+			r.Labels[k] = v[0]
+		} else {
+			r.Labels[k] = v
+		}
+	}
+
+	for k, v := range req.Header {
+		switch strings.ToLower(k) {
+		case "host",
+			"user-agent",
+			"cookie",
+			"cache-control",
+			"accept-encoding",
+			"connection",
+			"pragma",
+			"accept",
+			"dnt":
+			// ignore headers
+		default:
+			if len(v) == 1 {
+				r.Supplement[k] = v[0]
+			} else {
+				r.Supplement[k] = v
+			}
+		}
+	}
+
+	return r
+}
+
+func Reap(req *http.Request) error {
+	log.Debug(req.RemoteAddr)
+	log.Debug(req.Referer())
+	log.Debug("cookies", req.Cookies())
+	log.Debug(req.UserAgent())
+	r := NewRecord("", req)
+	log.Debugf("%+v", r)
+	return nil
 }

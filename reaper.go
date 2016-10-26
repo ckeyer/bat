@@ -1,15 +1,15 @@
 package bat
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
-
-	log "github.com/Sirupsen/logrus"
+	// log "github.com/Sirupsen/logrus"
 )
 
 type Reaper interface {
-	Reap(*http.Request) error
+	Key() string
 }
 
 type Record struct {
@@ -43,7 +43,6 @@ func NewRecord(name string, req *http.Request) *Record {
 	}
 
 	for k, v := range req.URL.Query() {
-		log.Debugf("url params key: %s, value: %v", k, v)
 		if len(v) == 1 {
 			r.Labels[k] = v[0]
 		} else {
@@ -75,12 +74,6 @@ func NewRecord(name string, req *http.Request) *Record {
 	return r
 }
 
-func Reap(req *http.Request) error {
-	log.Debug(req.RemoteAddr)
-	log.Debug(req.Referer())
-	log.Debug("cookies", req.Cookies())
-	log.Debug(req.UserAgent())
-	r := NewRecord("", req)
-	log.Infof("%+v", r)
-	return nil
+func (r *Record) Key() string {
+	return fmt.Sprintf("%s/%v", r.Name, r.RecordAt.UnixNano())
 }

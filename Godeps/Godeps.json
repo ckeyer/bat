@@ -34,6 +34,45 @@
 			"Rev": "c200b10b5d5e122be351b67af224adc6128af5bf"
 		},
 		{
+			"ImportPath": "gopkg.in/bsm/ratelimit.v1",
+			"Rev": "db14e161995a5177acef654cb0dd785e8ee8bc22"
+		},
+		{
+			"ImportPath": "gopkg.in/redis.v4",
+			"Comment": "v4.1.12",
+			"Rev": "bb84d84aeaa98b3c5c887264031b294cc7ca860c"
+		},
+		{
+			"ImportPath": "gopkg.in/redis.v4/internal",
+			"Comment": "v4.1.12",
+			"Rev": "bb84d84aeaa98b3c5c887264031b294cc7ca860c"
+		},
+		{
+			"ImportPath": "gopkg.in/redis.v4/internal/consistenthash",
+			"Comment": "v4.1.12",
+			"Rev": "bb84d84aeaa98b3c5c887264031b294cc7ca860c"
+		},
+		{
+			"ImportPath": "gopkg.in/redis.v4/internal/errors",
+			"Comment": "v4.1.12",
+			"Rev": "bb84d84aeaa98b3c5c887264031b294cc7ca860c"
+		},
+		{
+			"ImportPath": "gopkg.in/redis.v4/internal/hashtag",
+			"Comment": "v4.1.12",
+			"Rev": "bb84d84aeaa98b3c5c887264031b294cc7ca860c"
+		},
+		{
+			"ImportPath": "gopkg.in/redis.v4/internal/pool",
+			"Comment": "v4.1.12",
+			"Rev": "bb84d84aeaa98b3c5c887264031b294cc7ca860c"
+		},
+		{
+			"ImportPath": "gopkg.in/redis.v4/internal/proto",
+			"Comment": "v4.1.12",
+			"Rev": "bb84d84aeaa98b3c5c887264031b294cc7ca860c"
+		},
+		{
 			"ImportPath": "gopkg.in/urfave/cli.v2",
 			"Comment": "v1.18.0-217-gc72728f",
 			"Rev": "c72728f42438425ffcd487986936357e17ebba3f"

@@ -13,18 +13,18 @@ type Reaper interface {
 }
 
 type Record struct {
-	Name       string `json:"name"`
-	Path       string `json:"path"`
-	RemoteAddr string `json:"remote_addr"`
-	Referer    string `json:"referer"`
-	Agent      string `json:"agent"`
+	Name       string `json:"name" bson:"name"`
+	Path       string `json:"path" bson:"path"`
+	RemoteAddr string `json:"remote_addr" bson:"remote_addr"`
+	Referer    string `json:"referer" bson:"referer"`
+	Agent      string `json:"agent" bson:"agent"`
 	// for url's Params
-	Labels map[string]interface{} `json:"labels"`
+	Labels map[string]interface{} `json:"labels" bson:"labels"`
 	// for more headers
-	Supplement map[string]interface{} `json:"supplement"`
-	Cookies    []*http.Cookie         `json:"cookies"`
+	Supplement map[string]interface{} `json:"supplement" bson:"supplement"`
+	Cookies    []*http.Cookie         `json:"cookies" bson:"cookies"`
 
-	RecordAt time.Time `json:"record_at"`
+	RecordAt time.Time `json:"record_at" bson:"record_at"`
 }
 
 func NewRecord(name string, req *http.Request) *Record {
@@ -81,6 +81,6 @@ func Reap(req *http.Request) error {
 	log.Debug("cookies", req.Cookies())
 	log.Debug(req.UserAgent())
 	r := NewRecord("", req)
-	log.Debugf("%+v", r)
+	log.Infof("%+v", r)
 	return nil
 }

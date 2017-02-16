@@ -1,15 +1,14 @@
 PWD := $(shell pwd)
+TMPBUNDLES := bundles/tmp
 PKG := github.com/ckeyer/bat
 APP := bat
-
+CGO_ENABLED=1
 DEV_IMAGE := ckeyer/dev
 PORT := 8001
 
 OS := $(shell go env GOOS)-$(shell go env GOARCH)
+NET := $(shell docker network inspect cknet > /dev/zero && echo "--net cknet --ip 172.16.1.7" || echo "")
 VERSION := $(shell cat VERSION.txt)
-
-default:
-	echo "hello$(NET)"
 
 release: clean local
 	cd bundles && tar zcf $(APP)$(VERSION).$(OS).tgz $(APP)
@@ -30,7 +29,9 @@ build:
 	 -w /opt/gopath/src/$(PKG) \
 	 $(DEV_IMAGE) make local
 
-NET := $(shell docker network inspect cknet > /dev/zero && echo "--net cknet --ip 172.16.1.7" || echo "")
+local:
+	go build -x -work -o $(TMPBUNDLES)/$(APP) cli/main.go
+
 dev:
 	docker run --rm -it \
 	 $(NET) \
@@ -40,3 +41,6 @@ dev:
 	 -v $(PWD):/opt/gopath/src/$(PKG) \
 	 -w /opt/gopath/src/$(PKG) \
 	 $(DEV_IMAGE) bash
+
+run:
+	go run ./cli/main.go -D 

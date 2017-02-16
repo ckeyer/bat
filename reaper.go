@@ -76,7 +76,8 @@ func NewRecord(name string, req *http.Request) *Record {
 }
 
 func Reap(req *http.Request) error {
-	log.Debug(req.RemoteAddr)
+	log.Debugf("Path: %s", req.URL.Path)
+	log.Debug("RemoteAddr:", req.RemoteAddr)
 	log.Debug(req.Referer())
 	log.Debug("cookies", req.Cookies())
 	log.Debug(req.UserAgent())

@@ -20,6 +20,7 @@ func main() {
 			&cli.StringFlag{
 				Name:        "addr",
 				EnvVars:     []string{"ADDR"},
+				Aliases:     []string{"a"},
 				Destination: &addr,
 				DefaultText: ":8080",
 				Value:       ":8080",
@@ -28,6 +29,7 @@ func main() {
 			&cli.BoolFlag{
 				Name:        "debug",
 				Aliases:     []string{"D"},
+				EnvVars:     []string{"DEBUG"},
 				Usage:       "debug model",
 				Destination: &debug,
 				DefaultText: "false",

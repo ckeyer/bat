@@ -5,7 +5,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/ckeyer/bat"
-	"gopkg.in/urfave/cli.v2"
+	cli "gopkg.in/urfave/cli.v2"
 )
 
 func main() {
@@ -20,6 +20,7 @@ func main() {
 			&cli.StringFlag{
 				Name:        "addr",
 				EnvVars:     []string{"ADDR"},
+				Aliases:     []string{"a"},
 				Destination: &addr,
 				DefaultText: ":8080",
 				Value:       ":8080",
@@ -28,6 +29,7 @@ func main() {
 			&cli.BoolFlag{
 				Name:        "debug",
 				Aliases:     []string{"D"},
+				EnvVars:     []string{"DEBUG"},
 				Usage:       "debug model",
 				Destination: &debug,
 				DefaultText: "false",

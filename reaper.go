@@ -75,12 +75,7 @@ func NewRecord(name string, req *http.Request) *Record {
 	return r
 }
 
-func Reap(req *http.Request) error {
-	log.Debug(req.RemoteAddr)
-	log.Debug(req.Referer())
-	log.Debug("cookies", req.Cookies())
-	log.Debug(req.UserAgent())
+func Reap(req *http.Request) {
 	r := NewRecord("", req)
-	log.Infof("%+v", r)
-	return nil
+	log.Debugf("%+v", r)
 }

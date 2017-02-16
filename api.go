@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	API = ""
+	API = "/images"
 )
 
 var (
@@ -30,19 +30,13 @@ func Serve(addr string) {
 	m := &martini.ClassicMartini{Martini: mar, Router: r}
 
 	m.Group(API, func(r martini.Router) {
-		r.Group("/image", func(r martini.Router) {
-			r.Get("/png", PNG)
-			r.Get("/jpg", JPG)
-			r.Get("/gif", GIF)
-			r.Get("/:key", IMG)
-		}, Reap)
-	})
+		r.Get("/png", PNG)
+		r.Get("/jpg", JPG)
+		r.Get("/gif", GIF)
+		r.Get("/:key", IMG)
+	}, Reap)
 	log.Infof("listening on %s", addr)
 	m.RunOnAddr(addr)
-}
-
-func Hello(rw http.ResponseWriter, req *http.Request) {
-	rw.Write([]byte("hello"))
 }
 
 func IMG(rw http.ResponseWriter, req *http.Request) {
@@ -61,16 +55,16 @@ func IMG(rw http.ResponseWriter, req *http.Request) {
 }
 
 func PNG(rw http.ResponseWriter, req *http.Request) {
-	rw.Header().Add("Content-Type", "image/png")
 	png.Encode(rw, DefaultImage)
+	rw.Header().Set("Content-Type", "image/png")
 }
 
 func JPG(rw http.ResponseWriter, req *http.Request) {
-	rw.Header().Add("Content-Type", "image/jpeg")
-	jpeg.Encode(rw, DefaultImage, &jpeg.Options{1})
+	jpeg.Encode(rw, DefaultImage, &jpeg.Options{10})
+	rw.Header().Set("Content-Type", "image/jpeg")
 }
 
 func GIF(rw http.ResponseWriter, req *http.Request) {
-	rw.Header().Add("Content-Type", "image/gif")
 	gif.Encode(rw, DefaultImage, &gif.Options{})
+	rw.Header().Set("Content-Type", "image/gif")
 }
